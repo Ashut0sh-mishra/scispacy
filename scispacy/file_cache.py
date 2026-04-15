@@ -7,7 +7,7 @@ import shutil
 import tempfile
 import json
 from urllib.parse import urlparse
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Optional, Tuple, Union, IO
 from hashlib import sha256
 
@@ -67,7 +67,7 @@ def url_to_filename(url: str, etag: Optional[str] = None) -> str:
 
     # Only keep the file extension to stay within filesystem NAME_MAX
     # limits (e.g. 143 bytes on eCryptfs).
-    _, ext = os.path.splitext(url.split("/")[-1])
+    _, ext = os.path.splitext(PurePosixPath(url).name)
     if ext:
         filename += ext
 
@@ -113,7 +113,7 @@ def _find_legacy_cache_path(
     url: str, etag: Optional[str], cache_dir: str
 ) -> Optional[str]:
     """Check for a cached file using the old naming scheme (full trailing URL component)."""
-    last_part = url.split("/")[-1]
+    last_part = PurePosixPath(url).name
     filename = sha256(url.encode("utf-8")).hexdigest()
     if etag:
         filename += "." + sha256(etag.encode("utf-8")).hexdigest()
