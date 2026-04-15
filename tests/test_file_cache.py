@@ -80,15 +80,15 @@ class TestFileUtils(unittest.TestCase):
 
     def test_legacy_cache_files_still_found(self):
         from scispacy.file_cache import _find_legacy_cache_path
-        from hashlib import sha256
 
         url = "https://example.com/data/model.bin"
         etag = "some-etag"
         # Create a file with the old naming scheme
-        last_part = url.split("/")[-1]
-        old_filename = sha256(url.encode("utf-8")).hexdigest()
-        old_filename += "." + sha256(etag.encode("utf-8")).hexdigest()
-        old_filename += "." + last_part
+        old_filename = (
+            "b6794c9b5101703824700fe53156f28b7c5c2ef432467c1399f30142e7db9977"
+            ".700ccb3dacaae313fbd70ea50e5646377634d6f144ea63acaf30d8e7ecf1cc4e"
+            ".model.bin"
+        )
         old_path = os.path.join(self.TEST_DIR, old_filename)
         pathlib.Path(old_path).touch()
 
